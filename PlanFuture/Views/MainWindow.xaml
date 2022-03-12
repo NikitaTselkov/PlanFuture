@@ -4,8 +4,32 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:core="clr-namespace:PlanFuture.Core;assembly=PlanFuture.Core"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="350" Width="525" >
-    <Grid>
-        <ContentControl prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}" />
+        Title="{Binding Title}"
+        Height="720"
+        Width="1080">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="DarkGray" Color="#212528" />
+        <SolidColorBrush x:Key="Gray" Color="#2B2F33" />
+    </Window.Resources>
+
+    <Grid Background="{StaticResource DarkGray}">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="250*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl
+            Grid.Column="0"
+            prism:RegionManager.RegionName="{x:Static core:RegionNames.NavigateBarRegion}"
+        />
+
+        <Grid Grid.Column="1" Background="{StaticResource Gray}">
+            <ContentControl
+                prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}"
+            />
+        </Grid>
+
     </Grid>
 </Window>

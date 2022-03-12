@@ -1,0 +1,22 @@
+.git
+
+pull origin master
+
+:commitMessage = String(Added NavigationModule and configured MainWindow)
+
+:tag = describe --tags => (0, 1) --> Ignore
+:tag = Skip({tag}, 1) --> Ignore
+:tag = Take({tag}, 5)
+
+add *
+commit -m "{commitMessage}"
+
+:if(tag == Empty) :version = String(1.0.0)
+:else :version = Increment({tag}, 9, 9)
+
+tag -a v{version} -m "{commitMessage}"
+
+<! Send to GitHub>
+
+push origin : master
+push origin v{version}

@@ -4,7 +4,7 @@ namespace PlanFuture.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        private string _title = "Prism Application";
+        private string _title = "Plan Future";
         public string Title
         {
             get { return _title; }

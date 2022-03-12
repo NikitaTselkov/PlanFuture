@@ -1,5 +1,7 @@
-﻿using PlanFuture.Views;
+﻿using PlanFuture.NavigationModule;
+using PlanFuture.Views;
 using Prism.Ioc;
+using Prism.Modularity;
 using System.Windows;
 
 namespace PlanFuture
@@ -16,7 +18,12 @@ namespace PlanFuture
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            
+        }
 
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        {
+            moduleCatalog.AddModule<NavigationModuleModule>();
         }
     }
 }
