@@ -19,7 +19,7 @@ namespace PlanFuture.Modules.DasboardModule
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
-            _regionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(MainDasboard));
+            _regionManager.RegisterViewWithRegion(RegionNames.MainContentRegion, typeof(MainDasboard));
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)

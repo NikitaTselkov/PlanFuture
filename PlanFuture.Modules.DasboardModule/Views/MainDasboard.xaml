@@ -1,9 +1,10 @@
 ﻿<UserControl x:Class="PlanFuture.Modules.DasboardModule.Views.MainDasboard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://prismlibrary.com/"             
+             xmlns:prism="http://prismlibrary.com/"     
+             xmlns:core="clr-namespace:PlanFuture.Core;assembly=PlanFuture.Core"
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid Background="Orange">
-            
+    <Grid>
+   
     </Grid>
 </UserControl>

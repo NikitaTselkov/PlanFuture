@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="PlanFuture.Modules.Projects.Views.CardsCollection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"      
+             xmlns:uc="clr-namespace:PlanFuture.Modules.Projects.UserControls"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="White" Color="#DCE0E3" />
+    </UserControl.Resources>
+    
+    <Grid 
+        Background="Transparent"
+        MinHeight="200"
+        MinWidth="200"
+        MaxWidth="300"
+        MaxHeight="600">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="5" >
+
+            <TextBlock
+                Text="{Binding Title}"
+                Foreground="{StaticResource White}"
+                FontWeight="SemiBold"
+                FontSize="12"
+            />
+
+            <uc:MenuButton />
+
+        </DockPanel>
+        
+        <ItemsControl Margin="5" ItemsSource="{Binding Cards}" Grid.Row="1">
+
+        </ItemsControl>
+
+    </Grid>
+</UserControl>

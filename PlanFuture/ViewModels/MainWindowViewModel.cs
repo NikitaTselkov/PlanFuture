@@ -32,7 +32,7 @@ namespace PlanFuture.ViewModels
             if (string.IsNullOrEmpty(navigationPath))
                 throw new ArgumentNullException();
 
-            _regionManager.RequestNavigate(RegionNames.ContentRegion, navigationPath);
+            _regionManager.RequestNavigate(RegionNames.MainContentRegion, navigationPath);
         }
     }
 }

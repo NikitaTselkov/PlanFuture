@@ -11,6 +11,7 @@
     <Window.Resources>
         <SolidColorBrush x:Key="DarkGray" Color="#212528" />
         <SolidColorBrush x:Key="Gray" Color="#2B2F33" />
+        <DropShadowEffect x:Key="NavigationMenuShadow" BlurRadius="5" ShadowDepth="5" Direction="240" Opacity="0.1" />
     </Window.Resources>
 
     <Grid Background="{StaticResource DarkGray}">
@@ -22,12 +23,13 @@
 
         <ContentControl
             Grid.Column="0"
+            Panel.ZIndex="1"
             prism:RegionManager.RegionName="{x:Static core:RegionNames.NavigateBarRegion}"
         />
 
-        <Grid Grid.Column="1" Background="{StaticResource Gray}">
+        <Grid Grid.Column="1" Background="{StaticResource Gray}" Effect="{StaticResource NavigationMenuShadow}">
             <ContentControl
-                prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}"
+                prism:RegionManager.RegionName="{x:Static core:RegionNames.MainContentRegion}"
             />
         </Grid>
 
