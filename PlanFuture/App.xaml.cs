@@ -1,4 +1,7 @@
-﻿using PlanFuture.NavigationModule;
+﻿using PlanFuture.Core;
+using PlanFuture.Modules.DasboardModule;
+using PlanFuture.Modules.NavigationModule;
+using PlanFuture.Modules.Projects;
 using PlanFuture.Views;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -18,12 +21,14 @@ namespace PlanFuture
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            
+            containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule<NavigationModuleModule>();
+            moduleCatalog.AddModule<NavigationModule>();
+            moduleCatalog.AddModule<DasboardModule>();
+            moduleCatalog.AddModule<ProjectsModule>();
         }
     }
 }

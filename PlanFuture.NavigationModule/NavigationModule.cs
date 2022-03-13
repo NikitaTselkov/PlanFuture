@@ -6,13 +6,13 @@ using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace PlanFuture.NavigationModule
+namespace PlanFuture.Modules.NavigationModule
 {
-    public class NavigationModuleModule : IModule
+    public class NavigationModule : IModule
     {
         private readonly IRegionManager _regionManager;
 
-        public NavigationModuleModule(IRegionManager regionManager)
+        public NavigationModule(IRegionManager regionManager)
         {
             _regionManager = regionManager;
         }

@@ -11,6 +11,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlanFuture.Core\PlanFuture.Core.csproj" />
+    <ProjectReference Include="..\PlanFuture.Modules.DasboardModule\PlanFuture.Modules.DasboardModule.csproj" />
+    <ProjectReference Include="..\PlanFuture.Modules.Projects\PlanFuture.Modules.Projects.csproj" />
     <ProjectReference Include="..\PlanFuture.NavigationModule\PlanFuture.Modules.NavigationModule.csproj" />
   </ItemGroup>
 </Project>

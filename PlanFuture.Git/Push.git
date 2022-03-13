@@ -2,7 +2,7 @@
 
 pull origin master
 
-:commitMessage = String(Added NavigationModule and configured MainWindow)
+:commitMessage = String(Added Navigation to Application)
 
 :tag = describe --tags => (0, 1) --> Ignore
 :tag = Skip({tag}, 1) --> Ignore
