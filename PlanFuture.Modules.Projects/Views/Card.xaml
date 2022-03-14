@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="PlanFuture.Modules.Projects.Views.Card"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"     
+             xmlns:behaviors="clr-namespace:PlanFuture.Modules.Projects.Behaviors"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             behaviors:DragAndDropBehavior.IsDrag="True">
+
+    <Grid
+        Background="Orange"
+        MinHeight="180"
+        MinWidth="180">
+            
+        
+        
+    </Grid>
+</UserControl>

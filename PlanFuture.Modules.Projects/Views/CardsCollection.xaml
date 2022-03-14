@@ -3,19 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"      
              xmlns:uc="clr-namespace:PlanFuture.Modules.Projects.UserControls"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             xmlns:behaviors="clr-namespace:PlanFuture.Modules.Projects.Behaviors"
+             xmlns:local="clr-namespace:PlanFuture.Modules.Projects.Views"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             behaviors:DragAndDropBehavior.IsDrag="True">
 
     <UserControl.Resources>
         <SolidColorBrush x:Key="White" Color="#DCE0E3" />
     </UserControl.Resources>
-    
+
     <Grid 
         Background="Transparent"
         MinHeight="200"
         MinWidth="200"
         MaxWidth="300"
         MaxHeight="600">
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -33,10 +36,17 @@
             <uc:MenuButton />
 
         </DockPanel>
-        
-        <ItemsControl Margin="5" ItemsSource="{Binding Cards}" Grid.Row="1">
+
+        <ItemsControl ItemsSource="{Binding Cards}" Margin="0 5" Grid.Row="1">
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:Card Margin="0 5" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
 
         </ItemsControl>
 
     </Grid>
+    
 </UserControl>
