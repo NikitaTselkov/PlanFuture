@@ -2,16 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"     
-             xmlns:behaviors="clr-namespace:PlanFuture.Modules.Projects.Behaviors"
+             xmlns:behaviors="clr-namespace:PlanFuture.Core.Behaviors;assembly=PlanFuture.Core"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             behaviors:DragAndDropBehavior.IsDrag="True">
+             behaviors:DragAndDropBehavior.IsDrag="True"
+             MinHeight="180"
+             MinWidth="180"
+             MaxHeight="300"
+             MaxWidth="300">
 
-    <Grid
-        Background="Orange"
-        MinHeight="180"
-        MinWidth="180">
-            
-        
-        
+    <Grid Background="Orange">
+        <TextBlock Text="{Binding Title}" />
     </Grid>
 </UserControl>

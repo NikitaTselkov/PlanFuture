@@ -1,9 +1,9 @@
-﻿using Microsoft.Xaml.Behaviors;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace PlanFuture.Modules.Projects.Behaviors
+namespace PlanFuture.Core.Behaviors
 {
     public class DragAndDropBehavior
     {
@@ -36,7 +36,7 @@ namespace PlanFuture.Modules.Projects.Behaviors
         private static void OnDragChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var element = (UIElement)sender;
-            var isDrag = (bool)(e.NewValue);
+            var isDrag = (bool)e.NewValue;
 
             Instance = new DragAndDropBehavior();
             ((UIElement)sender).RenderTransform = Instance.Transform;
@@ -67,8 +67,21 @@ namespace PlanFuture.Modules.Projects.Behaviors
         private void ElementOnMouseLeftButtonUp(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             ((UIElement)sender).ReleaseMouseCapture();
-            _elementStartPosition2.X = Transform.X;
-            _elementStartPosition2.Y = Transform.Y;
+
+            var previewBorder = new DependencyObject();
+            var grid = VisualTreeHelper.GetParent((FrameworkElement)sender);
+            var t = VisualTreeHelper.GetParent(grid);
+
+            if (previewBorder is IDropPlace)
+            {
+                _elementStartPosition2.X = Transform.X;
+                _elementStartPosition2.Y = Transform.Y;
+            }
+            else
+            {
+                Transform.X = _elementStartPosition2.X;
+                Transform.Y = _elementStartPosition2.Y;
+            }
         }
 
         private void ElementOnMouseMove(object sender, MouseEventArgs mouseEventArgs)

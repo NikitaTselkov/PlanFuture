@@ -1,6 +1,9 @@
-﻿using PlanFuture.Modules.Projects.Models;
+﻿using PlanFuture.Core;
+using PlanFuture.Business;
 using Prism.Commands;
+using Prism.Ioc;
 using Prism.Mvvm;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,27 +13,46 @@ namespace PlanFuture.Modules.Projects.ViewModels
 {
     public class CardsCollectionViewModel : BindableBase
     {
-        private string _title = "Test";
+        private readonly IDragAndDropService _dragAndDropService;
+
+        private ICardCollection _cardCollection;
+        public ICardCollection CardCollection
+        {
+            get { return _cardCollection; }
+            set { SetProperty(ref _cardCollection, value); }
+        }
+
+        private string _title;
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
 
-        private ObservableCollection<Card> _cards;
-        public ObservableCollection<Card> Cards
+        private ObservableCollection<ICard> _cards;
+        public ObservableCollection<ICard> Cards
         {
             get { return _cards; }
             set { SetProperty(ref _cards, value); }
         }
 
-        public CardsCollectionViewModel()
-        {
-            _cards = new ObservableCollection<Card>();
+        private DelegateCommand _addCard;
+        public DelegateCommand AddCard =>
+            _addCard ?? (_addCard = new DelegateCommand(ExecuteAddCard));
 
-            _cards.Add(new Card());
-            _cards.Add(new Card());
-            _cards.Add(new Card());
+        public CardsCollectionViewModel(IDragAndDropService dragAndDropService)
+        {
+            _dragAndDropService = dragAndDropService;
+
+            CardCollection = _dragAndDropService.InitCollection();
+
+            Title = CardCollection.Title;
+            Cards = CardCollection.Cards;
+        }
+
+        private void ExecuteAddCard()
+        {
+            _dragAndDropService.SetItemToCollection(new Card("Test1"), CardCollection);
         }
     }
 }

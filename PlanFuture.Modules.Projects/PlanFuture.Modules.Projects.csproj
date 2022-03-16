@@ -10,5 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PlanFuture.Business\PlanFuture.Business.csproj" />
     <ProjectReference Include="..\PlanFuture.Core\PlanFuture.Core.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 </Project>

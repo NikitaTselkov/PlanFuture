@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanFuture.Modules.Navigati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanFuture.Business", "PlanFuture.Business\PlanFuture.Business.csproj", "{BC9E76A8-0C5C-4287-8C9D-E18C5F8326D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanFuture.Modules.DasboardModule", "PlanFuture.Modules.DasboardModule\PlanFuture.Modules.DasboardModule.csproj", "{9A777623-08C5-4659-9029-EFE521B6B47F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanFuture.Modules.DasboardModule", "PlanFuture.Modules.DasboardModule\PlanFuture.Modules.DasboardModule.csproj", "{9A777623-08C5-4659-9029-EFE521B6B47F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanFuture.Modules.Projects", "PlanFuture.Modules.Projects\PlanFuture.Modules.Projects.csproj", "{90DBCDDC-432C-4C41-944E-AD7A296BDDE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanFuture.Modules.Projects", "PlanFuture.Modules.Projects\PlanFuture.Modules.Projects.csproj", "{90DBCDDC-432C-4C41-944E-AD7A296BDDE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{AC8E9DD0-FD01-48F0-9B2E-C74C8CA85ED9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{90DBCDDC-432C-4C41-944E-AD7A296BDDE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90DBCDDC-432C-4C41-944E-AD7A296BDDE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90DBCDDC-432C-4C41-944E-AD7A296BDDE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC8E9DD0-FD01-48F0-9B2E-C74C8CA85ED9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC8E9DD0-FD01-48F0-9B2E-C74C8CA85ED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC8E9DD0-FD01-48F0-9B2E-C74C8CA85ED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC8E9DD0-FD01-48F0-9B2E-C74C8CA85ED9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

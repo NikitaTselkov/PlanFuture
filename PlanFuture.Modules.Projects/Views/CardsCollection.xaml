@@ -3,25 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"      
              xmlns:uc="clr-namespace:PlanFuture.Modules.Projects.UserControls"
-             xmlns:behaviors="clr-namespace:PlanFuture.Modules.Projects.Behaviors"
+             xmlns:behaviors="clr-namespace:PlanFuture.Core.Behaviors;assembly=PlanFuture.Core"
              xmlns:local="clr-namespace:PlanFuture.Modules.Projects.Views"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             behaviors:DragAndDropBehavior.IsDrag="True">
+             behaviors:DragAndDropBehavior.IsDrag="True"
+             MinHeight="200"
+             MaxHeight="700"
+             MinWidth="200"
+             MaxWidth="300">
 
     <UserControl.Resources>
         <SolidColorBrush x:Key="White" Color="#DCE0E3" />
     </UserControl.Resources>
 
-    <Grid 
-        Background="Transparent"
-        MinHeight="200"
-        MinWidth="200"
-        MaxWidth="300"
-        MaxHeight="600">
+    <Grid Background="Transparent">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Row="0" Margin="5" >
@@ -38,14 +38,31 @@
         </DockPanel>
 
         <ItemsControl ItemsSource="{Binding Cards}" Margin="0 5" Grid.Row="1">
-
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <local:Card Margin="0 5" />
+
+                    <Grid Margin="0 5">
+                        
+                        <uc:BorderPreview />
+
+                        <local:Card />
+                        
+                    </Grid>
+
+                    <DataTemplate.Triggers>
+                        
+                    </DataTemplate.Triggers>
+                    
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-
         </ItemsControl>
+
+        <Button 
+            Grid.Row="2"
+            Height="30"
+            Content="Add Card"
+            Command="{Binding AddCard}"
+        />
 
     </Grid>
     

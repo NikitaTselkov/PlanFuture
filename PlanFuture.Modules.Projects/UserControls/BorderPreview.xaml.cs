@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanFuture.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace PlanFuture.Modules.Projects.UserControls
     /// <summary>
     /// Логика взаимодействия для BorderPreview.xaml
     /// </summary>
-    public partial class BorderPreview : Border
+    public partial class BorderPreview : Border, IDropPlace
     {
         public BorderPreview()
         {

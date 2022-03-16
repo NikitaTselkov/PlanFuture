@@ -4,13 +4,37 @@
              xmlns:prism="http://prismlibrary.com/"   
              xmlns:local="clr-namespace:PlanFuture.Modules.Projects.Views"
              xmlns:core="clr-namespace:PlanFuture.Core;assembly=PlanFuture.Core"
+             xmlns:uc="clr-namespace:PlanFuture.Modules.Projects.UserControls"
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid>
+    <DockPanel>
 
-        <local:CardsCollection>
+        <Button Width="30" Height="30" Command="{Binding AddCardCollection}" />
+
+        <TextBox Width="100" Height="30" Text="{Binding CardTitle}" />
+
+        <ItemsControl ItemsSource="{Binding CardCollections}" Margin="0 5">
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
             
-        </local:CardsCollection>
-        
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid Margin="0 5">
+
+                        <uc:BorderPreview />
+
+                        <local:CardsCollection Margin="5" />
+
+                    </Grid>
+                    
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
         <ContentControl prism:RegionManager.RegionName="{x:Static core:RegionNames.ProjectContentRegion}" />
-    </Grid>
+    </DockPanel>
 </UserControl>

@@ -5,6 +5,7 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
+using Services;
 
 namespace PlanFuture.Modules.Projects
 {
@@ -27,6 +28,7 @@ namespace PlanFuture.Modules.Projects
             ViewModelLocationProvider.Register<MainProject, MainProjectViewModel>();
 
             containerRegistry.RegisterForNavigation<MainProject, MainProjectViewModel>(NavigationPaths.MainProject);
+            containerRegistry.RegisterSingleton<IDragAndDropService, DragAndDropService>();
         }
     }
 }
