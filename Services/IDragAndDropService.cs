@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Services
+namespace PlanFuture.Services
 {
     public interface IDragAndDropService
     {      
         public void SetItemToCollection(ICard card, ICardCollection cardCollection);
         public ICardCollection SetCollection(ICardCollection cardCollection);
-        public void SwitchItems<T>(T item1, T item2) where T : ICard, ICardCollection;
+        public void SwitchItems<T>(T item1, T item2) where T : IDraggedObject;
         public IEnumerable<ICardCollection> GetAllCollections();
         public ICardCollection GetCollectionById(int index);
         public ICard GetCardById(int index);

@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanFuture.Modules.Dasboard
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanFuture.Modules.Projects", "PlanFuture.Modules.Projects\PlanFuture.Modules.Projects.csproj", "{90DBCDDC-432C-4C41-944E-AD7A296BDDE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{AC8E9DD0-FD01-48F0-9B2E-C74C8CA85ED9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanFuture.Services", "Services\PlanFuture.Services.csproj", "{AC8E9DD0-FD01-48F0-9B2E-C74C8CA85ED9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

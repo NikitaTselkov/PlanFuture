@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace PlanFuture.Core
 {
-    public interface IDropPlace
+    public interface IDraggedObject
     {
-
+        public string Title { get; }
+        public int Index { get; set; }
     }
 }

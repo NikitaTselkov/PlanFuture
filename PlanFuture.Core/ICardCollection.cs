@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace PlanFuture.Core
 {
-    public interface ICardCollection
+    public interface ICardCollection : IDraggedObject
     {
-        public string Title { get; }
-        public int Index { get; set; }
         public ObservableCollection<ICard> Cards { get; set; }
+
+        public ICard this[ICard card]
+        {
+            get => Cards.FirstOrDefault(f => f == card);
+        }
     }
 }

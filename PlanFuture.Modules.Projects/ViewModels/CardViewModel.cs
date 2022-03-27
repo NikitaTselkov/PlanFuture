@@ -2,7 +2,7 @@
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
-using Services;
+using PlanFuture.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace PlanFuture.Modules.Projects.ViewModels
             _dragAndDropService = dragAndDropService;
 
             Card = _dragAndDropService.InitCard();
-
+            
             Title = Card.Title;
         }
     }

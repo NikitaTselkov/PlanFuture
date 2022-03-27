@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace PlanFuture.Services
 {
     public class DragAndDropService : IDragAndDropService
     {
-        private static ObservableCollection<ICardCollection> _collections = new();
-        private static int _lastCardCollectionIndex = 0;
-        private static int _lastCardIndex = 0;
+        private static List<ICardCollection> _collections = new();
+        private static int _lastCardCollectionIndex = -1;
+        private static int _lastCardIndex = -1;
 
         public IEnumerable<ICardCollection> GetAllCollections()
         {
@@ -63,7 +63,7 @@ namespace Services
                 throw new ArgumentNullException(nameof(card));
             }
 
-            return _collections?.SingleOrDefault(s => s == card);
+            return _collections?.SingleOrDefault(s => s.Cards.Any(a => a == card));
         }
 
         public ICardCollection GetCollectionById(int index)
@@ -96,7 +96,7 @@ namespace Services
             return null;
         }
 
-        public void SwitchItems<T>(T item1, T item2) where T : ICard, ICardCollection
+        public void SwitchItems<T>(T item1, T item2) where T : IDraggedObject
         {
             if (item1 is null)
             {
@@ -108,36 +108,27 @@ namespace Services
             }
 
             int index = 0;
-            ICardCollection collection1;
-            ICardCollection collection2;
 
-            switch (typeof(T))
+            if (item1 is ICard card1 && item2 is ICard card2)
             {
-                case ICard:
-                    collection1 = FindCollectionByCard(item1);
-                    collection2 = FindCollectionByCard(item2);
+                ICardCollection collection1 = FindCollectionByCard(card1);
+                ICardCollection collection2 = FindCollectionByCard(card2);
 
-                    index = collection1.Cards.FirstOrDefault(f => f == (ICard)item1).Index;
+                index = collection1.Cards.FirstOrDefault(f => f == card1).Index;
 
-                    ((ICard)item1).Index = ((ICard)item2).Index;
-                    ((ICard)item1).Index = index;
+                _collections.FirstOrDefault(f => f == collection1)[card1].Index = card2.Index;
+                _collections.FirstOrDefault(f => f == collection1)[card2].Index = index;
 
-                    _collections.FirstOrDefault(f => f == collection1).Cards.Remove(item1);
-                    _collections.FirstOrDefault(f => f == collection1).Cards.Add(item2);
+                _collections.ForEach(f => f.Cards.Sort((s1, s2) => s1.Index.CompareTo(s2.Index)));
+            }
+            else if (item1 is ICardCollection collection1 && item2 is ICardCollection collection2)
+            {
+                index = _collections.FirstOrDefault(f => f == collection1).Index;
+                _collections.FirstOrDefault(f => f == collection1).Index = collection2.Index;
+                _collections.FirstOrDefault(f => f == collection2).Index = index;
 
-                    _collections.FirstOrDefault(f => f == collection2).Cards.Remove(item2);
-                    _collections.FirstOrDefault(f => f == collection2).Cards.Add(item1);
-
-                    break;
-                case ICardCollection:
-
-                    collection1 = item1;
-                    collection2 = item2;
-                    index = _collections.FirstOrDefault(f => f == collection1).Index;
-                    _collections.FirstOrDefault(f => f == collection1).Index = collection2.Index;
-                    _collections.FirstOrDefault(f => f == collection2).Index = index;
-                    break;
-                default: break;
+                //TODO: Сортировать.
+                // _collections.OrderBy(o => o.Index);
             }
         }
 

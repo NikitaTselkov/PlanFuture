@@ -19,7 +19,7 @@ namespace PlanFuture.Modules.Projects.UserControls
     /// <summary>
     /// Логика взаимодействия для BorderPreview.xaml
     /// </summary>
-    public partial class BorderPreview : Border, IDropPlace
+    public partial class BorderPreview : Border
     {
         public BorderPreview()
         {

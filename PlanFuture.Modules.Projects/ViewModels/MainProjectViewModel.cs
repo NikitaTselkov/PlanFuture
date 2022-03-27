@@ -2,7 +2,7 @@
 using PlanFuture.Core;
 using Prism.Commands;
 using Prism.Mvvm;
-using Services;
+using PlanFuture.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

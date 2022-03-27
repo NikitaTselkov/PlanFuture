@@ -5,7 +5,7 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
-using Services;
+using PlanFuture.Services;
 
 namespace PlanFuture.Modules.Projects
 {

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace PlanFuture.Core
 {
-    public interface ICard : IDraggedObject
+    public interface IViewDraggedObject
     {
+        object DataContext { get; set; }
     }
 }

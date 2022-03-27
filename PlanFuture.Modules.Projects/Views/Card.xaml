@@ -10,7 +10,7 @@
              MaxHeight="300"
              MaxWidth="300">
 
-    <Grid Background="Orange">
+    <Grid>
         <TextBlock Text="{Binding Title}" />
     </Grid>
 </UserControl>

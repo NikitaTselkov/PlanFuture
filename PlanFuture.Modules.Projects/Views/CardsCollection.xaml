@@ -6,14 +6,24 @@
              xmlns:behaviors="clr-namespace:PlanFuture.Core.Behaviors;assembly=PlanFuture.Core"
              xmlns:local="clr-namespace:PlanFuture.Modules.Projects.Views"
              prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              behaviors:DragAndDropBehavior.IsDrag="True"
              MinHeight="200"
              MaxHeight="700"
              MinWidth="200"
              MaxWidth="300">
 
+    <i:Interaction.Triggers>
+        <behaviors:RoutedEventTrigger RoutedEvent="behaviors:DragAndDropBehavior.ReplaceableObjectPropertyChanged">
+            <prism:InvokeCommandAction Command="{Binding SwitchCards}" />
+        </behaviors:RoutedEventTrigger>
+    </i:Interaction.Triggers>
+
+
     <UserControl.Resources>
+
         <SolidColorBrush x:Key="White" Color="#DCE0E3" />
+
     </UserControl.Resources>
 
     <Grid Background="Transparent">
@@ -31,6 +41,7 @@
                 Foreground="{StaticResource White}"
                 FontWeight="SemiBold"
                 FontSize="12"
+                x:Name="textBo"
             />
 
             <uc:MenuButton />
@@ -40,19 +51,9 @@
         <ItemsControl ItemsSource="{Binding Cards}" Margin="0 5" Grid.Row="1">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-
-                    <Grid Margin="0 5">
-                        
-                        <uc:BorderPreview />
-
-                        <local:Card />
-                        
-                    </Grid>
-
-                    <DataTemplate.Triggers>
-                        
-                    </DataTemplate.Triggers>
-                    
+                    <StackPanel Margin="0 5">
+                        <local:Card Margin="0 5" />
+                    </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
