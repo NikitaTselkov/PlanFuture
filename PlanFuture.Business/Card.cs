@@ -10,8 +10,8 @@ namespace PlanFuture.Business
     public class Card : ICard
     {
         public string Title { get; private set; }
-
         public int Index { get; set; }
+        public int IndexInCollection { get; set; }
 
         public Card(string title)
         {

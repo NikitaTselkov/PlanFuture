@@ -1,12 +1,15 @@
 ﻿using PlanFuture.Core;
+using PlanFuture.Core.Events;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace PlanFuture.Services
 {
     public interface IDragAndDropService
-    {      
+    {
         public void SetItemToCollection(ICard card, ICardCollection cardCollection);
         public ICardCollection SetCollection(ICardCollection cardCollection);
         public void SwitchItems<T>(T item1, T item2) where T : IDraggedObject;

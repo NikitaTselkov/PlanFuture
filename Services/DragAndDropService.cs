@@ -1,8 +1,10 @@
 ﻿using PlanFuture.Core;
+using PlanFuture.Core.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +14,8 @@ namespace PlanFuture.Services
     public class DragAndDropService : IDragAndDropService
     {
         private static List<ICardCollection> _collections = new();
-        private static int _lastCardCollectionIndex = -1;
-        private static int _lastCardIndex = -1;
+        private static int _lastCardCollectionIndex = 0;
+        private static int _lastCardIndex = 0;
 
         public IEnumerable<ICardCollection> GetAllCollections()
         {
@@ -48,6 +50,7 @@ namespace PlanFuture.Services
                 cardCollection.Cards = new ObservableCollection<ICard>();
 
             card.Index = _lastCardIndex + 1;
+            card.IndexInCollection = cardCollection.Cards.Count;
             cardCollection.Cards.Add(card);
 
             if (_collections.Any(a => a == cardCollection))
@@ -63,7 +66,7 @@ namespace PlanFuture.Services
                 throw new ArgumentNullException(nameof(card));
             }
 
-            return _collections?.SingleOrDefault(s => s.Cards.Any(a => a == card));
+            return _collections?.SingleOrDefault(s => s.Cards.Any(a => a.Index == card.Index));
         }
 
         public ICardCollection GetCollectionById(int index)
@@ -114,21 +117,49 @@ namespace PlanFuture.Services
                 ICardCollection collection1 = FindCollectionByCard(card1);
                 ICardCollection collection2 = FindCollectionByCard(card2);
 
-                index = collection1.Cards.FirstOrDefault(f => f == card1).Index;
+                var card1IndexInCollection = card1.IndexInCollection;
+                var card2IndexInCollection = card2.IndexInCollection;
 
-                _collections.FirstOrDefault(f => f == collection1)[card1].Index = card2.Index;
-                _collections.FirstOrDefault(f => f == collection1)[card2].Index = index;
+                ICard card = card1;
 
-                _collections.ForEach(f => f.Cards.Sort((s1, s2) => s1.Index.CompareTo(s2.Index)));
+                #region Черная магия
+
+                if (collection1 != collection2)
+                {
+                    card2.Index = _lastCardIndex + 2;
+                    card.Index = _lastCardIndex + 1;
+                }
+                else
+                {
+                    if (card1.IndexInCollection > card2.IndexInCollection)
+                    {
+                        card2.Index = _lastCardIndex + 1;
+                        card.Index = _lastCardIndex + 2;
+                    }
+                    else
+                    {
+                        card2.Index = _lastCardIndex + 2;
+                        card.Index = _lastCardIndex + 1;
+                    }
+                }
+
+                #endregion
+
+                card2.IndexInCollection = card2IndexInCollection;
+                collection2.Cards.RemoveAt(card2IndexInCollection);
+                collection2.Cards.Insert(card2IndexInCollection, card2);
+
+                card.IndexInCollection = card1IndexInCollection;
+                collection1.Cards.RemoveAt(card1IndexInCollection);
+                collection1.Cards.Insert(card1IndexInCollection, card);
             }
             else if (item1 is ICardCollection collection1 && item2 is ICardCollection collection2)
             {
                 index = _collections.FirstOrDefault(f => f == collection1).Index;
                 _collections.FirstOrDefault(f => f == collection1).Index = collection2.Index;
                 _collections.FirstOrDefault(f => f == collection2).Index = index;
-
-                //TODO: Сортировать.
-                // _collections.OrderBy(o => o.Index);
+                
+                //TODO: Добавить черной магии.
             }
         }
 

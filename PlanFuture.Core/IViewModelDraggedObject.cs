@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace PlanFuture.Core
 {
-    public interface ICard : IDraggedObject
+    public interface IViewModelDraggedObject
     {
-        public int IndexInCollection { get; set; }
+        public IDraggedObject DraggedObject { get; set; }
     }
 }

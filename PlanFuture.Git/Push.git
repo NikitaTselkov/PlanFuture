@@ -2,7 +2,7 @@
 
 pull origin master
 
-:commitMessage = String(Redesigned DragAndDropBehavior and DragAndDropService)
+:commitMessage = String(Implemented the ability to swap DraggedObjects)
 
 :tag = describe --tags => (0, 1) --> Ignore
 :tag = Skip({tag}, 1) --> Ignore

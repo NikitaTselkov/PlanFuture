@@ -6,18 +6,19 @@ using PlanFuture.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PlanFuture.Core.Events;
 
 namespace PlanFuture.Modules.Projects.ViewModels
 {
-    public class CardViewModel : BindableBase
+    public class CardViewModel : BindableBase, IViewModelDraggedObject
     {
         private readonly IDragAndDropService _dragAndDropService;
 
-        private ICard _card;
-        public ICard Card
+        private IDraggedObject _draggedObject;
+        public IDraggedObject DraggedObject
         {
-            get { return _card; }
-            set { SetProperty(ref _card, value); }
+            get { return _draggedObject; }
+            set { SetProperty(ref _draggedObject, value); }
         }
 
         private string _title;
@@ -31,9 +32,8 @@ namespace PlanFuture.Modules.Projects.ViewModels
         {
             _dragAndDropService = dragAndDropService;
 
-            Card = _dragAndDropService.InitCard();
-            
-            Title = Card.Title;
+            DraggedObject = _dragAndDropService.InitCard();
+            Title = new Random().Next(0, 3904).ToString();
         }
     }
 }

@@ -63,7 +63,10 @@ namespace PlanFuture.Modules.Projects.ViewModels
         {
             if (sender is ReplaceableObjectPropertyChangedEventArgs args)
             {
-                _dragAndDropService.SwitchItems(((CardViewModel)args.SelectedObject.DataContext).Card, ((CardViewModel)args.ReplaceableObject.DataContext).Card);
+                if (args.SelectedObject.DataContext is CardViewModel cardVM1 && args.ReplaceableObject.DataContext is CardViewModel cardVM2)
+                {
+                    _dragAndDropService.SwitchItems(cardVM1.DraggedObject, cardVM2.DraggedObject);
+                }
             }
         }
     }

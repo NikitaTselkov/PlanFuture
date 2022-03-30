@@ -1,10 +1,8 @@
-﻿using Microsoft.Xaml.Behaviors;
-using PlanFuture.Core.Events;
+﻿using PlanFuture.Core.Events;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -81,7 +79,7 @@ namespace PlanFuture.Core.Behaviors
 
         private static void OnDragChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var element = (UIElement)sender;
+            var element = (FrameworkElement)sender;
             var isDrag = (bool)e.NewValue;
 
             Instance = new DragAndDropBehavior();
@@ -92,16 +90,16 @@ namespace PlanFuture.Core.Behaviors
                 element.MouseLeftButtonDown += Instance.ElementOnMouseLeftButtonDown;
                 element.MouseLeftButtonUp += Instance.ElementOnMouseLeftButtonUp;
                 element.MouseMove += Instance.ElementOnMouseMove;
-
-                _draggedItems.Add(element.GetType(), (IViewDraggedObject)sender);
+                element.Loaded += Instance.ElementLoaded;
+                element.Unloaded += Instance.ElementUnloaded;
             }
             else
             {
                 element.MouseLeftButtonDown -= Instance.ElementOnMouseLeftButtonDown;
                 element.MouseLeftButtonUp -= Instance.ElementOnMouseLeftButtonUp;
                 element.MouseMove -= Instance.ElementOnMouseMove;
-
-                _draggedItems.Remove(element.GetType(), (IViewDraggedObject)sender);
+                element.Loaded += Instance.ElementLoaded;
+                element.Unloaded -= Instance.ElementUnloaded;
             }
         }
 
@@ -120,7 +118,7 @@ namespace PlanFuture.Core.Behaviors
         {
             ((UIElement)sender).ReleaseMouseCapture();
 
-            if (GetIntersectingElement(sender) is IViewDraggedObject replaceableObject)
+            if (GetIntersectingElement(sender, mouseButtonEventArgs) is IViewDraggedObject replaceableObject)
             {
                 SetReplaceableObject((DependencyObject)sender, replaceableObject);
             }
@@ -143,11 +141,30 @@ namespace PlanFuture.Core.Behaviors
             }
         }
 
-        private static IViewDraggedObject GetIntersectingElement(object sender)
+        private void ElementLoaded(object sender, RoutedEventArgs e)
         {
-            Point currentMousePosition = ((UIElement)sender).PointToScreen(new Point(0, 0));
+            _draggedItems.Add(sender.GetType(), (IViewDraggedObject)sender);
+        }
+
+        private void ElementUnloaded(object sender, RoutedEventArgs e)
+        {
+            var element = (FrameworkElement)sender;
+
+            element.MouseLeftButtonDown -= Instance.ElementOnMouseLeftButtonDown;
+            element.MouseLeftButtonUp -= Instance.ElementOnMouseLeftButtonUp;
+            element.MouseMove -= Instance.ElementOnMouseMove;
+            element.Loaded -= Instance.ElementLoaded;
+            element.Unloaded -= Instance.ElementUnloaded;
+
+            _draggedItems.Remove(element.GetType(), (IViewDraggedObject)sender);
+        }
+
+        private static IViewDraggedObject GetIntersectingElement(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            var relativeMousePosition = mouseButtonEventArgs.GetPosition((UIElement)sender);
+            Point currentMousePosition = ((UIElement)sender).PointToScreen(relativeMousePosition);
             Point draggedItemPosition;
-            
+
             foreach (IViewDraggedObject draggedItem in _draggedItems[sender.GetType()])
             {
                 draggedItemPosition = ((UIElement)draggedItem).PointToScreen(new Point(0, 0));

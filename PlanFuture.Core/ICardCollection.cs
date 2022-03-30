@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PlanFuture.Core
 {
@@ -14,6 +12,7 @@ namespace PlanFuture.Core
         public ICard this[ICard card]
         {
             get => Cards.FirstOrDefault(f => f == card);
+            set => Cards[Cards.IndexOf(card)] = value;
         }
     }
 }
