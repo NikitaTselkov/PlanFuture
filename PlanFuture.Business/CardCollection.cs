@@ -12,7 +12,8 @@ namespace PlanFuture.Business
     {
         public string Title { get; }
         public int Index { get; set; }
-        public ObservableCollection<ICard> Cards { get; set; }
+        public int IndexInCollection { get; set; }
+        public ObservableCollection<ICard> Cards { get; set; }      
 
         public CardCollection(string title)
         {

@@ -35,8 +35,10 @@ namespace PlanFuture.Services
             return cardCollection;
         }
 
-        public void SetItemToCollection(ICard card, ICardCollection cardCollection)
+        public void SetItemToCollection(ICard card, int cardCollectionIndex)
         {
+            var cardCollection = GetCollectionById(cardCollectionIndex);
+
             if (card is null)
             {
                 throw new ArgumentNullException(nameof(card));
@@ -52,11 +54,54 @@ namespace PlanFuture.Services
             card.Index = _lastCardIndex + 1;
             card.IndexInCollection = cardCollection.Cards.Count;
             cardCollection.Cards.Add(card);
+        }
 
-            if (_collections.Any(a => a == cardCollection))
-                _collections.Remove(cardCollection);
-            
-            _collections.Add(cardCollection);
+        public void MoveItemToAnotherCollection<T>(T item1, T item2) where T : IDraggedObject
+        {
+            if (item1 is null)
+            {
+                throw new ArgumentNullException(nameof(item1));
+            }
+            if (item2 is null)
+            {
+                throw new ArgumentNullException(nameof(item2));
+            }
+
+            if (item1 is ICard card1 && item2 is ICard card2)
+            {
+                ICardCollection collection1 = FindCollectionByCard(card1);
+                ICardCollection collection2 = FindCollectionByCard(card2);
+
+                var card2IndexInCollection = card2.IndexInCollection;
+
+                card1.IndexInCollection = card2IndexInCollection;
+                card1.Index = _lastCardIndex + 1;
+                collection1.Cards.Remove(card1);
+                collection2.Cards.Insert(card2IndexInCollection, card1);
+
+                for (int i = card2IndexInCollection + 1; i < collection2.Cards.Count; i++)
+                {
+                    collection2.Cards[i].IndexInCollection += 1;
+                }
+
+                for (int i = 0; i < collection1.Cards.Count; i++)
+                {
+                    collection1.Cards[i].IndexInCollection = i;
+                }
+            }
+        }
+
+        public bool IsItemsInDifferentCollections<T>(T item1, T item2) where T : IDraggedObject
+        {
+            if (item1 is ICard card1 && item2 is ICard card2)
+            {
+                var collection1 = FindCollectionByCard(card1);
+                var collection2 = FindCollectionByCard(card2);
+
+                return collection1.Index != collection2.Index;
+            }
+
+            throw new ArgumentNullException($"{nameof(item1)}, {nameof(item2)}");
         }
 
         public ICardCollection FindCollectionByCard(ICard card)

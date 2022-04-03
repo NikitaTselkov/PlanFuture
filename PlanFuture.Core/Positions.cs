@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace PlanFuture.Core
 {
-    public interface ICard : IDraggedObject
+    public enum Positions
     {
+        Null,
+        Above,
+        Below,
+        Same
     }
 }

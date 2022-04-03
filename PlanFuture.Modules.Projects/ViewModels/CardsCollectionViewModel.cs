@@ -56,7 +56,7 @@ namespace PlanFuture.Modules.Projects.ViewModels
         private void ExecuteAddCard()
         {
             //TODO: Изменить.
-            _dragAndDropService.SetItemToCollection(new Card("Test1"), CardCollection);
+            _dragAndDropService.SetItemToCollection(new Card("Test1"), CardCollection.Index);
         }
 
         private void ExecuteSwitchCards(object sender)
@@ -65,7 +65,10 @@ namespace PlanFuture.Modules.Projects.ViewModels
             {
                 if (args.SelectedObject.DataContext is CardViewModel cardVM1 && args.ReplaceableObject.DataContext is CardViewModel cardVM2)
                 {
-                    _dragAndDropService.SwitchItems(cardVM1.DraggedObject, cardVM2.DraggedObject);
+                    if (_dragAndDropService.IsItemsInDifferentCollections(cardVM1.DraggedObject, cardVM2.DraggedObject))
+                        _dragAndDropService.MoveItemToAnotherCollection(cardVM1.DraggedObject, cardVM2.DraggedObject);
+                    else 
+                        _dragAndDropService.SwitchItems(cardVM1.DraggedObject, cardVM2.DraggedObject);
                 }
             }
         }

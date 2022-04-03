@@ -10,5 +10,6 @@ namespace PlanFuture.Core
     {
         public string Title { get; }
         public int Index { get; set; }
+        public int IndexInCollection { get; set; }
     }
 }

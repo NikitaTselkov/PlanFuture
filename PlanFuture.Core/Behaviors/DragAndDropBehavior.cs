@@ -8,11 +8,16 @@ using System.Windows.Media;
 
 namespace PlanFuture.Core.Behaviors
 {
+
     public class DragAndDropBehavior : DependencyObject
     {
         public readonly TranslateTransform Transform = new TranslateTransform();
-        private Point _elementStartPosition2;
-        private Point _mouseStartPosition2;
+        private Point _elementStartPosition;
+        private Point _mouseStartPosition;
+        private Thickness? _startSenderMargin;
+        private static Point _transformPosition;
+        private static Positions _replaceableObjectPositionRelativeToCurrentElement;
+        private static DependencyObject _oldReplaceableObject;
         private static Lookup<Type, IViewDraggedObject> _draggedItems = new Lookup<Type, IViewDraggedObject>();
         private static DragAndDropBehavior _instance = new DragAndDropBehavior();     
         public static DragAndDropBehavior Instance
@@ -20,6 +25,7 @@ namespace PlanFuture.Core.Behaviors
             get { return _instance; }
             set { _instance = value; }
         }
+        private event EventHandler<ReplaceableObjectPositionChangedEventArgs> _replaceableObjectPositionChanged;
 
         #region Events
 
@@ -59,8 +65,23 @@ namespace PlanFuture.Core.Behaviors
             DependencyProperty.Register("ReplaceableObject",
                 typeof(IViewDraggedObject),
                 typeof(DragAndDropBehavior),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(null));
+
+        public static DependencyObject GetPreviewDependencyObject(DependencyObject obj)
+        {
+            return (DependencyObject)obj.GetValue(PreviewDependencyObjectProperty);
+        }
+
+        public static void SetPreviewDependencyObject(DependencyObject obj, DependencyObject value)
+        {
+            obj.SetValue(PreviewDependencyObjectProperty, value);
+        }
+
+        public static readonly DependencyProperty PreviewDependencyObjectProperty =
+            DependencyProperty.RegisterAttached("PreviewDependencyObject",
+                typeof(DependencyObject),
+                typeof(DragAndDropBehavior),
+                new PropertyMetadata(null));
 
         public static bool GetIsDrag(DependencyObject obj)
         {
@@ -110,7 +131,8 @@ namespace PlanFuture.Core.Behaviors
             mouseButtonEventArgs.Handled = true;
 
             UIElement parent = VisualTreeHelper.GetParent((FrameworkElement)sender) as UIElement;
-            _mouseStartPosition2 = mouseButtonEventArgs.GetPosition(parent);
+            _mouseStartPosition = mouseButtonEventArgs.GetPosition(parent);
+            _startSenderMargin = ((FrameworkElement)sender).Margin;
             ((UIElement)sender).CaptureMouse();
         }
 
@@ -118,31 +140,50 @@ namespace PlanFuture.Core.Behaviors
         {
             ((UIElement)sender).ReleaseMouseCapture();
 
-            if (GetIntersectingElement(sender, mouseButtonEventArgs) is IViewDraggedObject replaceableObject)
-            {
+            if (GetIntersectingElement(sender, mouseButtonEventArgs, _transformPosition) is IViewDraggedObject replaceableObject)
                 SetReplaceableObject((DependencyObject)sender, replaceableObject);
-            }
 
-            Transform.X = _elementStartPosition2.X;
-            Transform.Y = _elementStartPosition2.Y;
+            if (_startSenderMargin is not null)
+                ((FrameworkElement)sender).Margin = _startSenderMargin.Value;
+
+            RemovePreviewDependencyObject(_oldReplaceableObject);
+
+            _oldReplaceableObject = null;
+            _startSenderMargin = null;
+            _transformPosition = default;
+
+            Transform.X = 0;
+            Transform.Y = 0;
         }
 
         private void ElementOnMouseMove(object sender, MouseEventArgs mouseEventArgs)
         {
             UIElement parent = VisualTreeHelper.GetParent((FrameworkElement)sender) as UIElement;
-
             var mousePos = mouseEventArgs.GetPosition(parent);
-            var diff = mousePos - _mouseStartPosition2;
+            var diff = mousePos - _mouseStartPosition;
             
             if (((UIElement)sender).IsMouseCaptured)
             {
-                Transform.X = _elementStartPosition2.X + diff.X;
-                Transform.Y = _elementStartPosition2.Y + diff.Y;
+                Positions newPosition;
+                Positions oldPosition;
+
+                Transform.X = _elementStartPosition.X + diff.X;
+                Transform.Y = _elementStartPosition.Y + diff.Y;
+
+                if (GetIntersectingElement(sender, mouseEventArgs) is IViewDraggedObject replaceableObject)
+                {
+                    newPosition = GetRelativePosition(sender as IViewDraggedObject, replaceableObject);
+                    oldPosition = _replaceableObjectPositionRelativeToCurrentElement;
+
+                    Instance._replaceableObjectPositionChanged?.Invoke(null,
+                            new ReplaceableObjectPositionChangedEventArgs(oldPosition, newPosition, sender, replaceableObject));
+                }
             }
         }
 
         private void ElementLoaded(object sender, RoutedEventArgs e)
         {
+            Instance._replaceableObjectPositionChanged += OnReplaceableObjectPositionChanged;
             _draggedItems.Add(sender.GetType(), (IViewDraggedObject)sender);
         }
 
@@ -155,20 +196,91 @@ namespace PlanFuture.Core.Behaviors
             element.MouseMove -= Instance.ElementOnMouseMove;
             element.Loaded -= Instance.ElementLoaded;
             element.Unloaded -= Instance.ElementUnloaded;
+            Instance._replaceableObjectPositionChanged -= OnReplaceableObjectPositionChanged;
 
             _draggedItems.Remove(element.GetType(), (IViewDraggedObject)sender);
         }
 
-        private static IViewDraggedObject GetIntersectingElement(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        private void OnReplaceableObjectPositionChanged(object sender, ReplaceableObjectPositionChangedEventArgs e)
         {
-            var relativeMousePosition = mouseButtonEventArgs.GetPosition((UIElement)sender);
+            if (e.SelectedObject is null)
+            {
+                throw new ArgumentNullException(nameof(e.SelectedObject));
+            }
+            if (e.ReplaceableObject is null)
+            {
+                throw new ArgumentNullException(nameof(e.ReplaceableObject));
+            }
+
+            var replaceableElement = e.ReplaceableObject as DependencyObject;
+            
+            // Old 
+            RemovePreviewDependencyObject(_oldReplaceableObject);
+
+            // New
+            AddPreviewDependencyObject(replaceableElement, e);
+
+            _replaceableObjectPositionRelativeToCurrentElement = e.NewPosition;
+            _oldReplaceableObject = replaceableElement;
+        }
+
+        private void RemovePreviewDependencyObject(DependencyObject replaceableObject)
+        {
+            if (replaceableObject is not null)
+            {
+                var previewDependencyObject = GetPreviewDependencyObject(replaceableObject);
+                var replaceableObjectParent = VisualTreeHelper.GetParent(replaceableObject) as UIElement;
+
+                if (replaceableObjectParent is StackPanel stackPanel)
+                {
+                    if (((FrameworkElement)previewDependencyObject)?.Parent is not null)
+                        stackPanel.Children.Remove((UIElement)previewDependencyObject);
+                }
+            }
+        }
+
+        private void AddPreviewDependencyObject(DependencyObject replaceableObject, ReplaceableObjectPositionChangedEventArgs e)
+        {
+            if (replaceableObject is not null)
+            {
+                var actualHeight = ((FrameworkElement)replaceableObject).ActualHeight;
+                var previewDependencyObject = GetPreviewDependencyObject(replaceableObject);
+                var replaceableObjectParent = VisualTreeHelper.GetParent(replaceableObject) as UIElement;
+
+                if (replaceableObjectParent is StackPanel stackPanel)
+                {
+                    if (((FrameworkElement)previewDependencyObject)?.Parent is null)
+                    {
+                        if (e.NewPosition == Positions.Below || e.NewPosition == Positions.Same)
+                        {
+                            _transformPosition.Y = actualHeight;
+                            ((FrameworkElement)e.SelectedObject).Margin = new Thickness(0, -actualHeight, 0, 0);
+                            stackPanel.Children.Insert(0, (UIElement)previewDependencyObject);
+                        }
+                        else if (e.NewPosition == Positions.Above)
+                        {
+                            _transformPosition.Y = -actualHeight;
+                            ((FrameworkElement)e.SelectedObject).Margin = new Thickness(0, -actualHeight, 0, 0);
+                            stackPanel.Children.Insert(1, (UIElement)previewDependencyObject);
+                        }
+                    }
+                }
+            }
+        }
+
+        private IViewDraggedObject GetIntersectingElement(object sender, MouseEventArgs mouseEventArgs, Point transformPosition = new Point())
+        {
+            var relativeMousePosition = mouseEventArgs.GetPosition((UIElement)sender);
             Point currentMousePosition = ((UIElement)sender).PointToScreen(relativeMousePosition);
             Point draggedItemPosition;
+
+            currentMousePosition.X += transformPosition.X;
+            currentMousePosition.Y += transformPosition.Y;
 
             foreach (IViewDraggedObject draggedItem in _draggedItems[sender.GetType()])
             {
                 draggedItemPosition = ((UIElement)draggedItem).PointToScreen(new Point(0, 0));
-
+                
                 if (sender != draggedItem)
                 {
                     if (draggedItemPosition.X <= currentMousePosition.X &&
@@ -176,12 +288,27 @@ namespace PlanFuture.Core.Behaviors
                         draggedItemPosition.X + (draggedItem as FrameworkElement).ActualWidth >= currentMousePosition.X &&
                         draggedItemPosition.Y + (draggedItem as FrameworkElement).ActualHeight >= currentMousePosition.Y)
                     {
+                        _elementStartPosition.Y = ((FrameworkElement)sender).ActualHeight;
+
                         return draggedItem;
                     }
                 }
             }
 
             return null;
+        }
+
+        private static Positions GetRelativePosition(IViewDraggedObject selectedObject, IViewDraggedObject replaceableObject)
+        {
+            var replaceableItemIndexInCollection = (replaceableObject.DataContext as IViewModelDraggedObject)?.DraggedObject?.IndexInCollection;
+            var selectedItemIndexInCollection = (selectedObject.DataContext as IViewModelDraggedObject)?.DraggedObject?.IndexInCollection;
+
+            if (selectedItemIndexInCollection > replaceableItemIndexInCollection)
+                return Positions.Below;
+            else if (selectedItemIndexInCollection < replaceableItemIndexInCollection)
+                return Positions.Above;
+            else
+                return Positions.Same;
         }
     }
 }

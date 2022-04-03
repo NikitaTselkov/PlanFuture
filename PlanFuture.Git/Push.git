@@ -2,7 +2,7 @@
 
 pull origin master
 
-:commitMessage = String(Implemented the ability to swap DraggedObjects)
+:commitMessage = String(Implemented the ability to move card to another collection)
 
 :tag = describe --tags => (0, 1) --> Ignore
 :tag = Skip({tag}, 1) --> Ignore
