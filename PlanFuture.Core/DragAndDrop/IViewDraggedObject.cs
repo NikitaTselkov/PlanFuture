@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlanFuture.Core
+namespace PlanFuture.Core.DragAndDrop
 {
-    public interface IViewModelDraggedObject
+    public interface IViewDraggedObject
     {
-        public IDraggedObject DraggedObject { get; set; }
+        object DataContext { get; set; }
     }
 }

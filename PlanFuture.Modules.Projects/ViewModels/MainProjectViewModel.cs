@@ -1,12 +1,10 @@
 ﻿using PlanFuture.Business;
-using PlanFuture.Core;
 using Prism.Commands;
 using Prism.Mvvm;
 using PlanFuture.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using PlanFuture.Core.DragAndDrop;
+using PlanFuture.Core.Events;
 
 namespace PlanFuture.Modules.Projects.ViewModels
 {
@@ -21,30 +19,41 @@ namespace PlanFuture.Modules.Projects.ViewModels
             set { SetProperty(ref _cardTitle, value); }
         }
 
-        private ObservableCollection<ICardCollection> _cardCollections;
-        public ObservableCollection<ICardCollection> CardCollections
-        {
-            get { return _cardCollections; }
-            set { SetProperty(ref _cardCollections, value); }
-        }
+        public ObservableCollection<ICardCollection> CardCollections => _dragAndDropService.GetAllCollections();
 
+        #region Commands
 
-        private DelegateCommand _addCardCollection;
-        public DelegateCommand AddCardCollection =>
-            _addCardCollection ?? (_addCardCollection = new DelegateCommand(ExecuteAddCardCollection));
+        private DelegateCommand _addCardsCollection;
+        public DelegateCommand AddCardsCollection =>
+            _addCardsCollection ?? (_addCardsCollection = new DelegateCommand(ExecuteAddCardsCollection));
+
+        private DelegateCommand<ReplaceableObjectPropertyChangedEventArgs> _switchCardsCollection;
+        public DelegateCommand<ReplaceableObjectPropertyChangedEventArgs> SwitchCardsCollection =>
+            _switchCardsCollection ?? (_switchCardsCollection = new DelegateCommand<ReplaceableObjectPropertyChangedEventArgs>(ExecuteSwitchCardsCollection));
+
+        #endregion
 
         public MainProjectViewModel(IDragAndDropService dragAndDropService)
         {
             _dragAndDropService = dragAndDropService;
-
-            CardCollections = new ObservableCollection<ICardCollection>(_dragAndDropService.GetAllCollections());
         }
 
-        private void ExecuteAddCardCollection()
+        private void ExecuteAddCardsCollection()
         {
             // TODO: Сделать Validation
             if(!string.IsNullOrWhiteSpace(CardTitle))
-                CardCollections.Add(_dragAndDropService.SetCollection(new CardCollection(CardTitle)));
+                _dragAndDropService.SetCollection(new CardCollection(CardTitle));
+        }
+
+        private void ExecuteSwitchCardsCollection(object sender)
+        {
+            if (sender is ReplaceableObjectPropertyChangedEventArgs args)
+            {
+                if (args.SelectedObject.DataContext is CardsCollectionViewModel cardVM1 && args.ReplaceableObject.DataContext is CardsCollectionViewModel cardVM2)
+                {
+                    _dragAndDropService.SwitchItems(cardVM1.DraggedObject, cardVM2.DraggedObject);
+                }
+            }
         }
     }
 }

@@ -1,28 +1,23 @@
-﻿using PlanFuture.Core;
-using PlanFuture.Core.Events;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PlanFuture.Core.DragAndDrop;
 
 namespace PlanFuture.Services
 {
     public class DragAndDropService : IDragAndDropService
     {
-        private static List<ICardCollection> _collections = new();
+        private static ObservableCollection<ICardCollection> _collections = new();
         private static int _lastCardCollectionIndex = 0;
         private static int _lastCardIndex = 0;
 
-        public IEnumerable<ICardCollection> GetAllCollections()
+        public ObservableCollection<ICardCollection> GetAllCollections()
         {
             return _collections;
         }
 
-        public ICardCollection SetCollection(ICardCollection cardCollection)
+        public void SetCollection(ICardCollection cardCollection)
         {
             if (cardCollection is null)
             {
@@ -30,9 +25,8 @@ namespace PlanFuture.Services
             }
 
             cardCollection.Index = _lastCardCollectionIndex + 1;
+            cardCollection.IndexInCollection = _collections.Count;
             _collections.Add(cardCollection);
-
-            return cardCollection;
         }
 
         public void SetItemToCollection(ICard card, int cardCollectionIndex)
@@ -121,7 +115,7 @@ namespace PlanFuture.Services
                 throw new IndexOutOfRangeException(nameof(index));
             }
 
-            return _collections.SingleOrDefault(s => s.Index == index);
+            return _collections?.SingleOrDefault(s => s.Index == index);
         }
 
         public ICard GetCardById(int index)
@@ -155,8 +149,6 @@ namespace PlanFuture.Services
                 throw new ArgumentNullException(nameof(item2));
             }
 
-            int index = 0;
-
             if (item1 is ICard card1 && item2 is ICard card2)
             {
                 ICardCollection collection1 = FindCollectionByCard(card1);
@@ -166,6 +158,8 @@ namespace PlanFuture.Services
                 var card2IndexInCollection = card2.IndexInCollection;
 
                 ICard card = card1;
+
+                //TODO: Починить.
 
                 #region Черная магия
 
@@ -200,11 +194,26 @@ namespace PlanFuture.Services
             }
             else if (item1 is ICardCollection collection1 && item2 is ICardCollection collection2)
             {
-                index = _collections.FirstOrDefault(f => f == collection1).Index;
-                _collections.FirstOrDefault(f => f == collection1).Index = collection2.Index;
-                _collections.FirstOrDefault(f => f == collection2).Index = index;
-                
-                //TODO: Добавить черной магии.
+                #region Черная магия
+
+                if (collection1.IndexInCollection > collection2.IndexInCollection)
+                {
+                    collection2.Index = _lastCardCollectionIndex + 2;
+                    collection1.Index = _lastCardCollectionIndex + 1;
+
+                    SwapCardCollections(ref collection1, ref collection2, 1);
+                    UpdateCardsIndex(ref collection2, ref collection1);
+                }
+                else
+                {
+                    collection2.Index = _lastCardCollectionIndex + 1;
+                    collection1.Index = _lastCardCollectionIndex + 2;
+
+                    SwapCardCollections(ref collection1, ref collection2, -1);
+                    UpdateCardsIndex(ref collection1, ref collection2);
+                }
+
+                #endregion
             }
         }
 
@@ -218,6 +227,36 @@ namespace PlanFuture.Services
         {
             _lastCardCollectionIndex++;
             return GetCollectionById(_lastCardCollectionIndex);
+        }
+
+        private static void SwapCardCollections(ref ICardCollection collection1, ref ICardCollection collection2, int IndexOffset)
+        {
+            var collection1IndexInCollection = collection1.IndexInCollection;
+            var collection2IndexInCollection = collection2.IndexInCollection;
+
+            collection1.IndexInCollection = collection2IndexInCollection;
+            _collections.RemoveAt(collection1IndexInCollection);
+            _collections.Insert(collection2IndexInCollection, collection1);
+
+            collection2.IndexInCollection = collection1IndexInCollection;
+            _collections.RemoveAt(collection2IndexInCollection + IndexOffset);
+            _collections.Insert(collection1IndexInCollection, collection2);
+        }
+
+        private static void UpdateCardsIndex(ref ICardCollection collection1, ref ICardCollection collection2)
+        {
+            var lastCardIndex = 0;
+
+            for (int i = 0; i < collection2.Cards.Count; i++)
+            {
+                collection2.Cards[i].Index = _lastCardIndex + i + 1;
+                lastCardIndex = _lastCardIndex + i + 1;
+            }
+
+            for (int i = 0; i < collection1.Cards.Count; i++)
+            {
+                collection1.Cards[i].Index = lastCardIndex + i + 1;
+            }
         }
     }
 }

@@ -1,15 +1,12 @@
 ﻿using PlanFuture.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PlanFuture.Core.DragAndDrop;
 
 namespace PlanFuture.Business
 {
     public class Card : ICard
     {
-        public string Title { get; private set; }
+        public string Title { get; set; }
         public int Index { get; set; }
         public int IndexInCollection { get; set; }
 

@@ -1,12 +1,7 @@
-﻿using PlanFuture.Core;
-using Prism.Commands;
-using Prism.Ioc;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 using PlanFuture.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using PlanFuture.Core.Events;
+using PlanFuture.Core.DragAndDrop;
 
 namespace PlanFuture.Modules.Projects.ViewModels
 {
@@ -21,19 +16,13 @@ namespace PlanFuture.Modules.Projects.ViewModels
             set { SetProperty(ref _draggedObject, value); }
         }
 
-        private string _title;
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+        public string Title => DraggedObject.Title;
 
         public CardViewModel(IDragAndDropService dragAndDropService)
         {
             _dragAndDropService = dragAndDropService;
 
             DraggedObject = _dragAndDropService.InitCard();
-            Title = new Random().Next(0, 3904).ToString();
         }
     }
 }

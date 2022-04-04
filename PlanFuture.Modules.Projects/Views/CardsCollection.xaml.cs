@@ -1,11 +1,5 @@
-﻿using PlanFuture.Core;
-using PlanFuture.Modules.Projects.UserControls;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
+﻿using System.Windows.Controls;
+using PlanFuture.Core.DragAndDrop;
 
 namespace PlanFuture.Modules.Projects.Views
 {

@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlanFuture.Core
+namespace PlanFuture.Core.DragAndDrop
 {
-    public enum Positions
+    public interface ICard : IDraggedObject
     {
-        Null,
-        Above,
-        Below,
-        Same
     }
 }

@@ -1,39 +1,30 @@
-﻿using PlanFuture.Core;
-using PlanFuture.Business;
+﻿using PlanFuture.Business;
 using Prism.Commands;
-using Prism.Ioc;
 using Prism.Mvvm;
 using PlanFuture.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
 using PlanFuture.Core.Events;
-using System.ComponentModel;
+using PlanFuture.Core.DragAndDrop;
+
 
 namespace PlanFuture.Modules.Projects.ViewModels
 {
-    public class CardsCollectionViewModel : BindableBase
+    public class CardsCollectionViewModel : BindableBase, IViewModelDraggedObject
     {
         private readonly IDragAndDropService _dragAndDropService;
 
-        private ICardCollection _cardCollection;
-        public ICardCollection CardCollection
+        private IDraggedObject _draggedObject;
+        public IDraggedObject DraggedObject
         {
-            get { return _cardCollection; }
-            set{ SetProperty(ref _cardCollection, value); }
+            get { return _draggedObject; }
+            set{ SetProperty(ref _draggedObject, value); }
         }
 
-        private string _title;
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
+        public string Title => DraggedObject.Title;
 
-        public ObservableCollection<ICard> Cards => _dragAndDropService.GetCollectionById(CardCollection.Index).Cards;
+        public ObservableCollection<ICard> Cards => _dragAndDropService.GetCollectionById(DraggedObject.Index).Cards;
 
+        #region Commands
 
         private DelegateCommand _addCard;
         public DelegateCommand AddCard =>
@@ -43,20 +34,19 @@ namespace PlanFuture.Modules.Projects.ViewModels
         public DelegateCommand<ReplaceableObjectPropertyChangedEventArgs> SwitchCards =>
             _switchCards ?? (_switchCards = new DelegateCommand<ReplaceableObjectPropertyChangedEventArgs>(ExecuteSwitchCards));
 
+        #endregion
 
         public CardsCollectionViewModel(IDragAndDropService dragAndDropService)
         {
             _dragAndDropService = dragAndDropService;
 
-            CardCollection = _dragAndDropService.InitCollection();
-
-            Title = CardCollection.Title;
+            DraggedObject = _dragAndDropService.InitCollection();
         }
 
         private void ExecuteAddCard()
         {
             //TODO: Изменить.
-            _dragAndDropService.SetItemToCollection(new Card("Test1"), CardCollection.Index);
+            _dragAndDropService.SetItemToCollection(new Card("Test1"), DraggedObject.Index);
         }
 
         private void ExecuteSwitchCards(object sender)

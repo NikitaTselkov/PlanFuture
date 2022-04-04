@@ -1,6 +1,5 @@
-﻿using PlanFuture.Core;
-using System;
-using System.Windows;
+﻿using System;
+using PlanFuture.Core.DragAndDrop;
 using System.Windows.Controls;
 using System.Windows.Media;
 

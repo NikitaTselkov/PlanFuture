@@ -8,6 +8,7 @@
              xmlns:uc="clr-namespace:PlanFuture.Modules.Projects.UserControls"
              behaviors:DragAndDropBehavior.IsDrag="True"
              behaviors:DragAndDropBehavior.PreviewDependencyObject="{DynamicResource borderPreview}"
+             behaviors:DragAndDropBehavior.Orientation="Vertical"
              MinHeight="180"
              MinWidth="180"
              MaxHeight="300"

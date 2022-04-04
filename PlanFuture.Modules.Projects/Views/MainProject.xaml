@@ -4,11 +4,19 @@
              xmlns:prism="http://prismlibrary.com/"   
              xmlns:local="clr-namespace:PlanFuture.Modules.Projects.Views"
              xmlns:core="clr-namespace:PlanFuture.Core;assembly=PlanFuture.Core"
-             xmlns:uc="clr-namespace:PlanFuture.Modules.Projects.UserControls"
+             xmlns:behaviors="clr-namespace:PlanFuture.Core.Behaviors;assembly=PlanFuture.Core"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              prism:ViewModelLocator.AutoWireViewModel="True">
+
+    <i:Interaction.Triggers>
+        <behaviors:RoutedEventTrigger RoutedEvent="behaviors:DragAndDropBehavior.ReplaceableObjectPropertyChanged">
+            <prism:InvokeCommandAction Command="{Binding SwitchCardsCollection}" />
+        </behaviors:RoutedEventTrigger>
+    </i:Interaction.Triggers>
+
     <DockPanel>
 
-        <Button Width="30" Height="30" Command="{Binding AddCardCollection}" />
+        <Button Width="30" Height="30" Command="{Binding AddCardsCollection}" />
 
         <TextBox Width="100" Height="30" Text="{Binding CardTitle}" />
 
@@ -22,15 +30,9 @@
             
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-
-                    <Grid Margin="0 5">
-
-                        <uc:BorderPreview />
-
+                    <StackPanel Orientation="Horizontal" Margin="0 5">
                         <local:CardsCollection Margin="5" />
-
-                    </Grid>
-                    
+                    </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

@@ -1,4 +1,5 @@
-﻿<UserControl x:Class="PlanFuture.Modules.Projects.Views.CardsCollection"
+﻿<UserControl x:Name="cardsCollection"
+             x:Class="PlanFuture.Modules.Projects.Views.CardsCollection"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"      
@@ -8,6 +9,8 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              behaviors:DragAndDropBehavior.IsDrag="True"
+             behaviors:DragAndDropBehavior.PreviewDependencyObject="{DynamicResource borderPreview}"
+             behaviors:DragAndDropBehavior.Orientation="Horizontal"
              MinHeight="200"
              MaxHeight="700"
              MinWidth="200"
@@ -19,10 +22,16 @@
         </behaviors:RoutedEventTrigger>
     </i:Interaction.Triggers>
 
-
     <UserControl.Resources>
 
         <SolidColorBrush x:Key="White" Color="#DCE0E3" />
+
+        <uc:BorderPreview
+            x:Key="borderPreview"
+            Height="{Binding ElementName=cardsCollection, Path=Height}"
+            Width="200"
+            Margin="0 5"
+        />
 
     </UserControl.Resources>
 

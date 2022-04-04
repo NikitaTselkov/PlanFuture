@@ -1,16 +1,11 @@
-﻿using PlanFuture.Core;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using PlanFuture.Core.DragAndDrop;
 
 namespace PlanFuture.Business
 {
     public class CardCollection : ICardCollection
     {
-        public string Title { get; }
+        public string Title { get; set; }
         public int Index { get; set; }
         public int IndexInCollection { get; set; }
         public ObservableCollection<ICard> Cards { get; set; }      
